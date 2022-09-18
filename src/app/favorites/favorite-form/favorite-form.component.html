@@ -1,0 +1,80 @@
+<form [formGroup]="form" (ngSubmit)="submit($event)">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        {{ title }}
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="result" fxLayout="column">
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+          <mat-form-field fxFlex="auto">
+            <mat-label> Alias </mat-label>
+            <input
+              matInput
+              type="text"
+              required
+              [formControlName]="'accountAlias'"
+            />
+            <mat-error *ngIf="accountAlias?.errors">
+              {{ accountAlias! | formErrorHandler }}</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field fxFlex="auto">
+            <mat-label> Nombre en la Cuenta </mat-label>
+            <input matInput type="text" [formControlName]="'accountName'" />
+            <mat-error *ngIf="accountName?.errors">
+              {{ accountName! | formErrorHandler }}</mat-error
+            >
+          </mat-form-field>
+        </div>
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+          <mat-form-field fxFlex="auto">
+            <mat-label> No. de Cuenta </mat-label>
+            <input
+              matInput
+              type="number"
+              step="1"
+              required
+              [formControlName]="'accountCode'"
+            />
+            <mat-error *ngIf="accountCode?.errors">
+              {{ accountCode! | formErrorHandler }}</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field fxFlex="auto">
+            <mat-label> DPI </mat-label>
+            <input
+              matInput
+              type="number"
+              step="1"
+              required
+              [formControlName]="'accountDpi'"
+            />
+            <mat-error *ngIf="accountDpi?.errors">
+              {{ accountDpi! | formErrorHandler }}</mat-error
+            >
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <a mat-raised-button routerLink="/favorites"
+        ><mat-icon>cancel</mat-icon>Cancelar</a
+      >
+      <button
+        mat-raised-button
+        type="submit"
+        [disabled]="form.invalid"
+        color="primary"
+      >
+        <mat-icon>save</mat-icon>
+        Guardar
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>

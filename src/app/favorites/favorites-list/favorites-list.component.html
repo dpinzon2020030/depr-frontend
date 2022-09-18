@@ -1,0 +1,193 @@
+<mat-spinner *ngIf="processing"></mat-spinner>
+<mat-tab-group mat-align-tabs="start">
+  <mat-tab label="Favoritos">
+    <div class="actions">
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="24px">
+        <div fxLayout="column" fxLayoutGap="8px">
+          <button
+            mat-raised-button
+            color="accent"
+            class="ml-5"
+            [routerLink]="['./new']"
+          >
+            <mat-icon>add</mat-icon>
+            Nuevo Favorito
+          </button>
+        </div>
+
+        <div fxLayout="column" fxLayoutGap="8px">
+          <button
+            mat-raised-button
+            color="accent"
+            class="ml-5"
+            [routerLink]="['./edit', favorite ? favorite._id ?? '' : '']"
+            [disabled]="favorites.length === 0"
+          >
+            <mat-icon>edit</mat-icon>
+            Editar Favorito
+          </button>
+        </div>
+
+        <div fxLayout="column" fxLayoutGap="8px">
+          <button
+            mat-raised-button
+            color="warn"
+            class="ml-5"
+            (click)="delete(favorite)"
+            [disabled]="favorites.length === 0"
+          >
+            <mat-icon>delete</mat-icon>
+            Eliminar Favorito
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="favoritesForm">
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="24px">
+        <div fxLayout="column" fxLayoutGap="8px">
+          <mat-form-field>
+            <mat-label>Favorito</mat-label>
+            <mat-select
+              formControlName="accountControl"
+              (valueChange)="changeFavorite($event)"
+            >
+              <mat-option *ngFor="let favorite of favorites" [value]="favorite">
+                {{ favorite.accountAlias }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="24px">
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="16px">
+          <mat-form-field class="col-12">
+            <mat-label> No. de Cuenta </mat-label>
+            <input matInput type="text" [formControlName]="'accountCode'" />
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-tab>
+  <mat-tab label="Transferir">
+    <div class="actions">
+      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="24px">
+        <div fxLayout="column" fxLayoutGap="8px">
+          <h3>Origen:</h3>
+          <fury-accounts
+            (accountSelected)="accountSelected($event)"
+            [refreshAccount]="refreshAccount"
+          ></fury-accounts>
+        </div>
+
+        <div fxLayout="column" fxLayoutGap="8px">
+          <h3>Datos de la Transferencia:</h3>
+          <mat-card>
+            <form [formGroup]="formTransfer" (ngSubmit)="submit($event)">
+              <!-- <mat-card-header>
+                <mat-card-title> Datos de la Transferencia </mat-card-title>
+              </mat-card-header> -->
+              <mat-card-content>
+                <mat-spinner *ngIf="processing"></mat-spinner>
+                <div class="result" fxLayout="column">
+                  <div
+                    fxLayout="column"
+                    fxLayout.gt-sm="row"
+                    fxLayoutGap.gt-sm="16px"
+                  >
+                    <mat-form-field fxFlex="auto">
+                      <mat-label> Descripcion </mat-label>
+                      <input
+                        matInput
+                        type="text"
+                        required
+                        [formControlName]="'description'"
+                      />
+                      <mat-error *ngIf="description?.errors">
+                        {{ description! | formErrorHandler }}</mat-error
+                      >
+                    </mat-form-field>
+                  </div>
+
+                  <div
+                    fxLayout="column"
+                    fxLayout.gt-sm="row"
+                    fxLayoutGap.gt-sm="16px"
+                  >
+                    <mat-form-field fxFlex="auto">
+                      <mat-label> Monto </mat-label>
+                      <input
+                        matInput
+                        type="number"
+                        step="1"
+                        required
+                        [formControlName]="'amount'"
+                      />
+                      <mat-error *ngIf="amount?.errors">
+                        {{ amount! | formErrorHandler }}</mat-error
+                      >
+                    </mat-form-field>
+                  </div>
+                </div>
+              </mat-card-content>
+
+              <mat-card-actions>
+                <button
+                  mat-raised-button
+                  type="submit"
+                  [disabled]="formTransfer.invalid"
+                  color="primary"
+                >
+                  <mat-icon>move_down</mat-icon>
+                  Transferir
+                </button>
+              </mat-card-actions>
+            </form>
+          </mat-card>
+        </div>
+
+        <div fxLayout="column" fxLayoutGap="8px">
+          <h3>Destino:</h3>
+          <form [formGroup]="destinationFavoritesForm">
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="24px">
+              <div fxLayout="column" fxLayoutGap="8px">
+                <mat-form-field>
+                  <mat-label>Favorito</mat-label>
+                  <mat-select
+                    formControlName="accountControl"
+                    (valueChange)="changeDestinationFavorite($event)"
+                  >
+                    <mat-option
+                      *ngFor="let favorite of favorites"
+                      [value]="favorite"
+                    >
+                      {{ favorite.accountAlias }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="24px">
+              <div
+                fxLayout="column"
+                fxLayout.gt-sm="row"
+                fxLayoutGap.gt-sm="16px"
+              >
+                <mat-form-field class="col-12">
+                  <mat-label> No. de Cuenta </mat-label>
+                  <input
+                    matInput
+                    type="text"
+                    [formControlName]="'accountCode'"
+                  />
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </mat-tab>
+</mat-tab-group>
